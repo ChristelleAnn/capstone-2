@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {ref,getDownloadURL,uploadBytesResumable,listAll} from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable, listAll } from "firebase/storage";
 import { storage, db } from "../firebaseConfig";
 import { setDoc, doc } from "firebase/firestore";
-import {TextField,Button,Card,CardHeader,CardContent,Typography,IconButton} from "@mui/material";
+import { TextField, Button, Card, CardHeader, CardContent, Typography, IconButton } from "@mui/material";
 import { Download, UploadCloud, Search } from "lucide-react";
 
 interface FileData {
@@ -113,8 +113,6 @@ export default function FormTemplates() {
       return;
     }
 
-    console.log("Uploading file:", newFileName);
-
     const storageRef = ref(storage, `templates/${sectionTitle}/${newFileName}`);
     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
@@ -122,7 +120,6 @@ export default function FormTemplates() {
       "state_changed",
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(`Upload is ${progress}% done for ${sectionTitle}`);
         setUploadProgress((prev) => ({
           ...prev,
           [sectionTitle]: progress,
@@ -134,7 +131,6 @@ export default function FormTemplates() {
       async () => {
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log("File uploaded successfully. Download URL:", downloadURL);
 
           const fileData: FileData = {
             name: newFileName,
@@ -142,7 +138,6 @@ export default function FormTemplates() {
           };
 
           await setDoc(doc(db, "templates", `${sectionTitle}-${newFileName}`), fileData);
-          console.log("File metadata saved to Firestore.");
 
           fetchFilesFromFirebase();
           setUploadProgress((prev) => ({
@@ -166,16 +161,16 @@ export default function FormTemplates() {
     .filter((section) => section.items.length > 0);
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-blue-100 to-green-100 p-8">
-      <Card className="max-w-4xl mx-auto shadow-xl rounded-lg">
+    <div className="min-h-full bg-white p-8 ">
+      <Card className="max-w-4xl mx-auto shadow-2xl bg-gray-800 rounded-lg">
         <CardHeader
           title="Templates"
-          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center rounded-sm"
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center rounded-t-lg py-4"
           titleTypographyProps={{ variant: "h4", fontWeight: "bold" }}
         />
         <CardContent className="p-6 space-y-6">
           {/* Search Bar */}
-          <div className="flex justify-end mb-4">
+          <div className="bg-white flex justify-end mb-4">
             <TextField
               fullWidth
               variant="outlined"
@@ -189,13 +184,14 @@ export default function FormTemplates() {
                   </IconButton>
                 ),
               }}
+              className="bg-white text-white-200 rounded-md"
             />
           </div>
 
           {/* Template Sections */}
           {filteredSections.map((section, index) => (
             <div key={index} className="mb-8 last:mb-0">
-              <Typography variant="h5" className="text-indigo-700 font-semibold">
+              <Typography variant="h5" className="text-indigo-400 font-semibold mb-2">
                 {section.title}
               </Typography>
 
@@ -208,6 +204,7 @@ export default function FormTemplates() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleFileChange(e, section.title)
                     }
+                    className="text-gray-200"
                   />
 
                   <TextField
@@ -218,6 +215,7 @@ export default function FormTemplates() {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleFileNameChange(e, section.title)
                     }
+                    className="bg-gray-700 text-gray-200 rounded-md"
                   />
 
                   <Button
@@ -225,37 +223,37 @@ export default function FormTemplates() {
                     onClick={() => handleUpload(section.title)}
                     disabled={!selectedFiles[section.title]}
                     startIcon={<UploadCloud className="mr-2 h-4 w-4" />}
-                    className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
                   >
                     Upload
                   </Button>
                 </div>
                 {uploadProgress[section.title] > 0 && (
-                  <p className="text-indigo-600">Upload Progress: {uploadProgress[section.title]}%</p>
+                  <p className="text-indigo-400 mt-2">Upload Progress: {uploadProgress[section.title]}%</p>
                 )}
               </div>
 
               {/* Display uploaded files in this section */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="grid grid-cols-2 items-center font-semibold px-6 py-3 bg-gray-100">
-                  <span className="text-gray-700">Template Name</span>
-                  <span className="text-right text-gray-700">Action</span>
+              <div className="bg-gray-700 rounded-lg shadow-md overflow-hidden">
+                <div className="grid grid-cols-2 items-center font-semibold px-6 py-3 bg-gray-800">
+                  <span className="text-gray-300">Template Name</span>
+                  <span className="text-right text-gray-300">Action</span>
                 </div>
                 {section.items.length > 0 ? (
                   section.items.map((item, itemIndex) => (
                     <div
                       key={itemIndex}
                       className={`grid grid-cols-2 items-center px-6 py-4 ${
-                        itemIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      } hover:bg-indigo-100 transition duration-150 ease-in-out`}
+                        itemIndex % 2 === 0 ? "bg-gray-800" : "bg-gray-700"
+                      } hover:bg-indigo-500 transition duration-150 ease-in-out`}
                     >
-                      <span className="text-gray-800 font-medium">{item.name}</span>
+                      <span className="text-gray-200 font-medium">{item.name}</span>
                       <div className="text-right">
                         <Button
                           variant="outlined"
                           onClick={() => window.open(item.url, "_blank")}
                           startIcon={<Download className="mr-2 h-4 w-4" />}
-                          className="border-indigo-500 text-indigo-500 hover:bg-indigo-50"
+                          className="border-indigo-500 text-indigo-500 hover:bg-indigo-600"
                         >
                           Download
                         </Button>

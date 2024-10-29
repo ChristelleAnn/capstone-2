@@ -20,6 +20,9 @@ module.exports = {
           500: '#33b2b8', // Darker teal
           700: '#009b9b', // Dark teal
         },
+        lightPink: '#F8D7DA', // light pink (adjust if needed)
+        softMaroon: '#A04B56', 
+        darkPink: '#C65078',
       },
     },
   },

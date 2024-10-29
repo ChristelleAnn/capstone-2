@@ -20,7 +20,6 @@ interface Request {
   timestamp: any;
 }
 
-// Format the timestamp
 const formatTimestamp = (timestamp: any) => {
   if (!timestamp) return 'No timestamp available';
   
@@ -41,19 +40,13 @@ const formatTimestamp = (timestamp: any) => {
   }
 };
 
-// Get the current school year
 const getCurrentSchoolYear = () => {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1; // JavaScript months are zero-indexed
-  if (currentMonth >= 6) {
-    return `${currentYear}-${currentYear + 1}`;
-  } else {
-    return `${currentYear - 1}-${currentYear}`;
-  }
+  const currentMonth = currentDate.getMonth() + 1;
+  return currentMonth >= 6 ? `${currentYear}-${currentYear + 1}` : `${currentYear - 1}-${currentYear}`;
 };
 
-// Get today's date in a readable format
 const getFormattedDate = () => {
   const today = new Date();
   return today.toLocaleDateString('en-US', {
@@ -66,7 +59,6 @@ const getFormattedDate = () => {
 const Notifications: React.FC = () => {
   const [requests, setRequests] = useState<Request[]>([]);
 
-  // Fetch the requests from Firestore when the component is mounted
   useEffect(() => {
     const fetchRequests = async () => {
       const requestQuery = query(collection(db, 'form_requests'));
@@ -109,110 +101,79 @@ const Notifications: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-8 bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-4xl font-extrabold mb-6 text-gray-900 text-center">
-          Certificate Request List
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-sm w-64 mx-auto bg-white border-collapse border border-gray-200 rounded-sm shadow-sm">
-            <thead>
-              <tr className=" bg-gray-200">
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Full Name</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Form/Certificate</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">LRN</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Contact</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Email</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Strand/Track</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Year Graduated</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Grade Level</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Status</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Timestamp</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Action</th>
-                <th className="text-left px-4 py-2 text-gray-700 font-bold">Generate Data</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.length === 0 ? (
-                <tr>
-                  <td colSpan={12} className="text-center px-2 py-1 text-gray-500">
-                    No requests found.
-                  </td>
+    <div className="flex items-center justify-center min-h-screen bg-white text-white">
+      <div className="w-full max-w-7xl px-4 py-4">
+        <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+          <h2 className="text-2xl font-bold mb-4 text-center">Certificate Request List</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full bg-gray-800 border border-gray-700 rounded-md shadow-md">
+              <thead>
+                <tr className="bg-gray-700">
+                  {['Full Name', 'Form/Certificate', 'LRN', 'Contact', 'Email', 'Strand/Track', 'Year Graduated', 'Grade Level', 'Status', 'Timestamp', 'Action', 'Generate Data'].map((heading) => (
+                    <th key={heading} className="px-2 py-3 text-left text-gray-300 font-semibold text-sm">
+                      {heading}
+                    </th>
+                  ))}
                 </tr>
-              ) : (
-                requests.map((request, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-2 py-1">
-                      {request.firstName !== 'N/A' && request.firstName}{' '}
-                      {request.middleInitial !== 'N/A' && request.middleInitial}{' '}
-                      {request.lastName !== 'N/A' && request.lastName}{' '}
-                      {request.suffix && request.suffix !== 'N/A' && `${request.suffix}`}
-                    </td>
-
-                    <td className="px-2 py-1">
-                      {request.depedForm}
-                    </td>
-                    <td className="px-2 py-1">{request.lrn}</td>
-                    <td className="px-2 py-1">{request.contactNumber}</td>
-                    <td className="px-2 py-1">
-                      <a href={`mailto:${request.email}`} className="text-blue-500 hover:underline">
-                        {request.email}
-                      </a>
-                    </td>
-                    <td className="px-2 py-1">
-                      {request.strand}
-                      {request.strand === 'TVL' && request.tvlSubOption ? (
-                        <span className="block text-gray-500 text-sm">
-                          ({request.tvlSubOption})
-                        </span>
-                      ) : null}
-                    </td>
-                    <td className="px-2 py-1">{request.yearGraduated}</td>
-                    <td className="px-2 py-1">{request.gradeLevel}</td>
-                    <td
-                      className={`px-2 py-1 font-semibold text-center rounded-md ${
-                        request.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-600'
-                          : request.status === 'accepted'
-                          ? 'bg-green-100 text-green-600'
-                          : request.status === 'done'
-                          ? 'bg-blue-100 text-blue-600'
-                          : 'bg-red-100 text-red-600'
-                      }`}
-                    >
-                      {request.status}
-                    </td>
-                    <td className="px-2 py-1">{request.timestamp}</td>
-                    <td className="px-2 py-1">
-                      {request.status === 'accepted' && (
-                        <button
-                          onClick={() => markAsDone(request.id)}
-                          className="bg-blue-500 text-white px-2 py-1 rounded-md shadow-md hover:bg-blue-600 transition-colors"
-                        >
-                          Mark as Done
-                        </button>
-                      )}
-                    </td>
-                    <td className="px-2 py-1">
-                      {request.depedForm === 'Certificate of Enrollment' && (
-                        <div>
-                          <strong>Full Name:</strong> {request.firstName} {request.middleInitial}{' '}
-                          {request.lastName} {request.suffix && request.suffix !== 'N/A' && request.suffix}
-                          <br />
-                          <strong>Date:</strong> {getFormattedDate()}
-                          <br />
-                          <strong>School Year:</strong> {getCurrentSchoolYear()}
-                        </div>
-                      )}
-                    </td>
+              </thead>
+              <tbody>
+                {requests.length === 0 ? (
+                  <tr>
+                    <td colSpan={12} className="text-center py-4 text-gray-400">No requests found.</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  requests.map((request) => (
+                    <tr key={request.id} className="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+                      <td className="px-2 py-2 text-sm">{`${request.firstName} ${request.middleInitial} ${request.lastName} ${request.suffix}`}</td>
+                      <td className="px-2 py-2 text-sm">{request.depedForm}</td>
+                      <td className="px-2 py-2 text-sm">{request.lrn}</td>
+                      <td className="px-2 py-2 text-sm">{request.contactNumber}</td>
+                      <td className="px-2 py-2 text-sm">
+                        <a href={`mailto:${request.email}`} className="text-blue-400 hover:underline">
+                          {request.email}
+                        </a>
+                      </td>
+                      <td className="px-2 py-2 text-sm">
+                        {request.strand}
+                        {request.strand === 'TVL' && request.tvlSubOption && (
+                          <span className="block text-gray-400 text-xs">({request.tvlSubOption})</span>
+                        )}
+                      </td>
+                      <td className="px-2 py-2 text-sm">{request.yearGraduated}</td>
+                      <td className="px-2 py-2 text-sm">{request.gradeLevel}</td>
+                      <td className={`px-2 py-2 text-sm font-semibold text-center rounded-md ${
+                        request.status === 'pending' ? 'bg-yellow-500 text-yellow-100' :
+                        request.status === 'accepted' ? 'bg-green-500 text-green-100' :
+                        'bg-blue-500 text-blue-100'
+                      }`}>
+                        {request.status}
+                      </td>
+                      <td className="px-2 py-2 text-sm">{request.timestamp}</td>
+                      <td className="px-2 py-2 text-sm">
+                        {request.status === 'accepted' && (
+                          <button
+                            onClick={() => markAsDone(request.id)}
+                            className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition"
+                          >
+                            Mark as Done
+                          </button>
+                        )}
+                      </td>
+                      <td className="px-2 py-2 text-sm">
+                        {request.depedForm === 'Certificate of Enrollment' && (
+                          <div className="text-xs text-gray-400">
+                            <strong>Full Name:</strong> {`${request.firstName} ${request.middleInitial} ${request.lastName} ${request.suffix}`}<br />
+                            <strong>Date:</strong> {getFormattedDate()}<br />
+                            <strong>School Year:</strong> {getCurrentSchoolYear()}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

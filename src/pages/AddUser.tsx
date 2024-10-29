@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { db, auth, storage } from '../firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore'; // Use setDoc to create user document
+import { doc, setDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
@@ -64,16 +64,16 @@ const AddUserPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-blue-100 to-green-100 p-8">
-      <h2 className="text-2xl font-bold">Add User</h2>
-      <form onSubmit={handleAddUser} className="mb-4">
-        <div className="grid grid-cols-2 gap-4">
+    <div className="min-h-full bg-white p-8">
+      <h2 className="text-2xl font-bold text-gray">Add User</h2>
+      <form onSubmit={handleAddUser} className="bg-gray-800 p-4 rounded-lg shadow-md mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
             type="text"
             placeholder="Fullname"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
             required
           />
           <input
@@ -81,7 +81,7 @@ const AddUserPage: React.FC = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
             required
           />
           <input
@@ -89,7 +89,7 @@ const AddUserPage: React.FC = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
             required
           />
           <input
@@ -97,13 +97,13 @@ const AddUserPage: React.FC = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
             required
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
             required
           >
             <option value="Admin">Admin</option>
@@ -113,11 +113,13 @@ const AddUserPage: React.FC = () => {
           <input
             type="file"
             onChange={handleImageChange}
-            className="p-2 border border-gray-300 rounded-md"
+            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
             accept="image/*"
           />
         </div>
-        <button type="submit" className="w-32 text-center mt-4 bg-blue-500 text-white p-2 rounded">Add User</button>
+        <button type="submit" className="mt-4 w-40 text-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600 flex justify-center">
+          Add User
+        </button>
       </form>
     </div>
   );

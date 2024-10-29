@@ -80,7 +80,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full p-2 mb-2 bg-blue-600 font-bold text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              className="mb-2 h-10 w-full text-lg font-medium bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-500 hover:to-purple-600 text-white rounded-md transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               Log In
             </button>
@@ -99,11 +99,11 @@ export default function LoginPage() {
       </div>
 
       {/* Sidebar Area */}
-      <div className="w-1/4 bg-gradient-to-br from-blue-100 to-green-100 p-8 flex flex-col justify-between items-center p-12">
+      <div className="w-1/4 bg-white p-8 flex flex-col justify-between items-center p-12">
         <button
           type="button"
           onClick={() => navigate('/about')} // Navigate to AboutUs page when clicked
-          className="text-3xl font-bold bg-blue-500 text-white py-2 px-2 rounded hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="h-16 w-full text-lg font-medium bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-500 hover:to-purple-600 text-white rounded-md transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
           About Us
         </button>
@@ -118,7 +118,7 @@ export default function LoginPage() {
 
 
         <div className="text-center">
-          <div className="flex justify-center space-x-4 mb-2">
+          <div className="flex justify-center space-x-4 mb-2 text-gray">
             <a
               href="https://web.facebook.com/gatenhsofficial"
               className="flex items-center hover:text-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
@@ -152,7 +152,7 @@ export default function LoginPage() {
 </a>
 
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray">
             2023-2024 © Valentina B. Boncan National High School
           </p>
         </div>
