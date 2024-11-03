@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        pastel: {
         pink: {
           100: '#ffccd5', // Light pink
           300: '#ff99a8', // Medium pink
@@ -23,9 +24,16 @@ module.exports = {
         lightPink: '#F8D7DA', // light pink (adjust if needed)
         softMaroon: '#A04B56', 
         darkPink: '#C65078',
+        blue: '#A7C7E7',
+        green: '#A8E6CF',
+        yellow: '#FEDD00',
+        pink: '#FFABAB',
+        purple: '#D6A2C4',
+        gray: '#F0F4F8',
       },
     },
   },
+},
   darkMode: 'class', // Enable class-based dark mode
   plugins: [],
 }

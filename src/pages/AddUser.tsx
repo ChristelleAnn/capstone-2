@@ -64,16 +64,16 @@ const AddUserPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-full bg-white p-8">
-      <h2 className="text-2xl font-bold text-gray">Add User</h2>
-      <form onSubmit={handleAddUser} className="bg-gray-800 p-4 rounded-lg shadow-md mt-4">
+    <div className=" bg-gradient-to-br from-blue-50 to-green-50 text-gray-700 min-h-screen p-8"> {/* Match the background color to UserManagement */}
+      <h2 className="text-2xl font-bold text-gray-800">Add User</h2>
+      <form onSubmit={handleAddUser} className="bg-white p-6 rounded-lg shadow-md mt-4"> {/* Use white background for form */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <input
             type="text"
             placeholder="Fullname"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
+            className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-800" // Adjusted color
             required
           />
           <input
@@ -81,7 +81,7 @@ const AddUserPage: React.FC = () => {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
+            className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-800" // Adjusted color
             required
           />
           <input
@@ -89,7 +89,7 @@ const AddUserPage: React.FC = () => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
+            className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-800" // Adjusted color
             required
           />
           <input
@@ -97,13 +97,13 @@ const AddUserPage: React.FC = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
+            className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-800" // Adjusted color
             required
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
+            className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-800" // Adjusted color
             required
           >
             <option value="Admin">Admin</option>
@@ -113,11 +113,11 @@ const AddUserPage: React.FC = () => {
           <input
             type="file"
             onChange={handleImageChange}
-            className="p-2 border border-gray-300 rounded-md bg-gray-700 text-white"
+            className="p-2 border border-gray-300 rounded-md bg-gray-50 text-gray-800" // Adjusted color
             accept="image/*"
           />
         </div>
-        <button type="submit" className="mt-4 w-40 text-center bg-green-500 text-white p-2 rounded-md hover:bg-green-600 flex justify-center">
+        <button type="submit" className="mt-4 w-40 text-center bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 flex justify-center"> {/* Match button color */}
           Add User
         </button>
       </form>

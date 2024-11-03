@@ -20,24 +20,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
         <aside className={`bg-gray-800 text-white h-screen shadow-lg transition-all duration-300 fixed top-0 left-0 z-50 ${isCollapsed ? 'w-16' : 'w-64'}`}>
             <div className="p-4 border-b border-gray-700 flex flex-col items-center">
                 <a href="https://ibb.co/qBFMV75" target="_blank" rel="noopener noreferrer">
-                <img src="https://i.ibb.co/qBFMV75/school-logo.png" // Replace with your actual image URL
-                alt="School Logo"
-                className={`transition-all duration-300 ${isCollapsed ? 'h-10 w-10' : 'h-20 w-auto'}`}
-                style={{
-                    objectFit: 'contain',
-                }}
-                />
+                    <img
+                        src="https://i.ibb.co/qBFMV75/school-logo.png" // Replace with your actual image URL
+                        alt="School Logo"
+                        className={`transition-all duration-300 ${isCollapsed ? 'h-10 w-10' : 'h-20 w-auto'}`}
+                        style={{
+                            objectFit: 'contain',
+                        }}
+                    />
                 </a>
                 {!isCollapsed && <h2 className="text-xl font-bold mt-2 text-center">Admin Dashboard</h2>}
-                </div>
+            </div>
 
             <nav className="mt-6">
                 <ul className="space-y-4">
                     {menuItems.map((item) => (
-                        <li key={item.path} className={`transition-all duration-300 rounded-lg ${location.pathname === item.path ? 'bg-gray-700' : ''}`}>
+                        <li
+                            key={item.path}
+                            className={`rounded-lg transition-all duration-300 ${location.pathname === item.path ? 'bg-gray-700' : 'hover:bg-gray-600'}`}
+                        >
                             <Link
                                 to={item.path}
-                                className={`flex items-center p-4 text-gray-300 transition duration-200 hover:bg-gray-600 ${isCollapsed ? 'justify-center' : 'justify-start'}`}
+                                className={`flex items-center p-4 text-gray-300 transition duration-200 hover:text-white ${isCollapsed ? 'justify-center' : 'justify-start'}`}
                             >
                                 {item.icon}
                                 {!isCollapsed && <span className="ml-3">{item.label}</span>}

@@ -101,9 +101,9 @@ const Notifications: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-white text-white">
+    <div className="flex items-center justify-center min-h-screen bg-gray-800 text-white">
       <div className="w-full max-w-7xl px-4 py-4">
-        <div className="bg-gray-800 shadow-lg rounded-lg p-4">
+        <div className="bg-gray-900 shadow-lg rounded-lg p-4">
           <h2 className="text-2xl font-bold mb-4 text-center">Certificate Request List</h2>
           <div className="overflow-x-auto">
             <table className="w-full bg-gray-800 border border-gray-700 rounded-md shadow-md">

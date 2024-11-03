@@ -19,6 +19,8 @@ import Enrollees from './pages/DataManagementComponents/Enrollees'; // Ensure yo
 import Dropouts from './pages/DataManagementComponents/Dropouts'; // Ensure you import Dropouts component
 import Transferee from './pages/DataManagementComponents/Transferee'; // Ensure you import Transferee component
 import AboutUs from './pages/AboutUs';
+import ClassRoster from './components/ClassRoster';
+import Information from './pages/Information';
 
 import { AuthProvider } from './context/AuthContext';
 
@@ -86,6 +88,9 @@ const App: React.FC = () => {
                                             <Route path="/transferee" element={<Transferee />} /> {/* Add route for Transferee */}
                                             <Route path="/request-form" element={<RequestForm />} />
                                             <Route path="/notifications" element={<Notifications />} /> {/* Add Notifications route */}
+                                            <Route path="*" element={<Navigate to="/" />} /> {/* Redirect authenticated users to Home */}
+                                            <Route path="/class-roster" element={<ClassRoster />} />
+                                            <Route path="/personal-information" element={<Information />} />
                                             <Route path="*" element={<Navigate to="/" />} /> {/* Redirect authenticated users to Home */}
                                         </Routes>
                                     </div>
