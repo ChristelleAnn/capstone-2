@@ -166,12 +166,12 @@ export default function FormTemplates() {
     .filter((section) => section.items.length > 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 to-purple-300 p-8">
-      <Card className="max-w-4xl mx-auto shadow-xl rounded-lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-green-100 p-8">
+      <Card className=" rounded-2xl max-w-4xl mx-auto shadow-xl">
         <CardHeader
           title="Templates"
           className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-center"
-          titleTypographyProps={{ variant: "h3", fontWeight: "bold" }}
+          titleTypographyProps={{ variant: "h4", fontWeight: "bold" }}
         />
         <CardContent className="p-6 space-y-6">
           {/* Search Bar */}

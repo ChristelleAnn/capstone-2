@@ -144,7 +144,7 @@ const Information: React.FC = () => {
     if (!userData) return <div className="flex items-center justify-center h-screen text-gray-600">Loading...</div>;
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="max-w-5xl w-full p-4 md:p-10 flex flex-col md:flex-row items-center space-y-10 md:space-y-0 md:space-x-16">
                 
                 {/* User Avatar */}
@@ -157,7 +157,7 @@ const Information: React.FC = () => {
                     {isEditing && (
                         <>
                             <button
-                                className="mt-4 bg-blue-600 text-white px-4 py-1.5 rounded-full font-medium hover:bg-blue-500 transition duration-200"
+                                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-blue-700 transition duration-200"
                                 onClick={() => document.getElementById('avatarUpload')?.click()}
                             >
                                 Change Photo
@@ -175,7 +175,7 @@ const Information: React.FC = () => {
 
                 {/* Profile Information Fields */}
                 <div className="flex-grow">
-                    <h2 className="text-3xl font-semibold text-gray-800 mb-8">Personal Information</h2>
+                    <h2 className="text-center text-3xl font-semibold text-gray-800 mb-8">Personal Information</h2>
 
                     {error && <p className="text-red-500 mb-4">{error}</p>}
 
@@ -266,14 +266,14 @@ const Information: React.FC = () => {
                             <>
                                 <button
                                     onClick={handleEditProfile}
-                                    className={`bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+                                    className={`bg-blue-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-blue-700 transition ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
                                     disabled={isLoading}
                                 >
                                     {isLoading ? 'Saving...' : 'Save Changes'}
                                 </button>
                                 <button
                                     onClick={() => setIsEditing(false)}
-                                    className="ml-4 bg-gray-400 text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-500 transition"
+                                    className="ml-4 bg-gray-400 text-white px-6 py-2 rounded-xl font-semibold hover:bg-gray-500 transition"
                                 >
                                     Cancel
                                 </button>

@@ -95,7 +95,7 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
     };
 
     return (
-        <header className="bg-gray-900 text-white flex items-center justify-between p-4 shadow-md z-50 relative">
+        <header className="bg-gray-900 text-white flex items-center justify-between p-4 shadow-md z-50 relative ">
             <button onClick={onToggleSidebar} className="text-white focus:outline-none">
                 <FaBars className="text-2xl" />
             </button>
@@ -110,7 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
                     >
                         <FaBell className="text-2xl" />
                         {notifications.length > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full text-xs px-1">
+                            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-xl text-xs px-1">
                                 {notifications.length}
                             </span>
                         )}

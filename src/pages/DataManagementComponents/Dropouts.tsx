@@ -1,20 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc, getDocs, QueryDocumentSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from "../../firebaseConfig";
 
-interface StudentData {
-  firstName: string;
-  lastName: string;
-  lrn: string;
-  grade: string;
-  educationLevel: string;
-  section: string;
-  strand?: string;
-}
-
 const DropoutForm = () => {
-  const [enrolledStudents, setEnrolledStudents] = useState<StudentData[]>([]);
-  const [selectedStudentLRN, setSelectedStudentLRN] = useState<string>('');
   const [formData, setFormData] = useState({
     name: '',
     LRN: '',
@@ -25,89 +13,39 @@ const DropoutForm = () => {
   
   const [dropoutList, setDropoutList] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetchEnrollmentData();
-    fetchDropoutRequests();
-  }, []);
-
-  // Fetches enrollment data from Firestore
-  const fetchEnrollmentData = async () => {
-    const data: StudentData[] = [];
-
-    // Fetch junior high enrollments
-    const juniorGradesSnapshot = await getDocs(collection(db, "enrollments/juniorHigh/grades"));
-    for (const gradeDoc of juniorGradesSnapshot.docs) {
-      const sectionsSnapshot = await getDocs(collection(gradeDoc.ref, 'sections'));
-      for (const sectionDoc of sectionsSnapshot.docs) {
-        const studentsSnapshot = await getDocs(collection(sectionDoc.ref, 'students'));
-        studentsSnapshot.forEach((studentDoc: QueryDocumentSnapshot) => {
-          data.push({
-            ...studentDoc.data(),
-            educationLevel: 'junior',
-            grade: gradeDoc.id,
-            section: sectionDoc.id,
-          } as StudentData);
-        });
-      }
-    }
-
-    // Fetch senior high enrollments
-    const seniorStrandsSnapshot = await getDocs(collection(db, "enrollments/seniorHigh/strands"));
-    for (const strandDoc of seniorStrandsSnapshot.docs) {
-      const sectionsSnapshot = await getDocs(collection(strandDoc.ref, 'sections'));
-      for (const sectionDoc of sectionsSnapshot.docs) {
-        const studentsSnapshot = await getDocs(collection(sectionDoc.ref, 'students'));
-        studentsSnapshot.forEach((studentDoc: QueryDocumentSnapshot) => {
-          const [strand, semester] = strandDoc.id.split('_');
-          data.push({
-            ...studentDoc.data(),
-            educationLevel: 'senior',
-            strand,
-            section: sectionDoc.id,
-          } as StudentData);
-        });
-      }
-    }
-
-    setEnrolledStudents(data);
-  };
-
-  // Function to fetch dropout requests from Firestore
+  // Function to fetch dropout requests from Firestore and update dropoutList
   const fetchDropoutRequests = async () => {
-    const querySnapshot = await getDocs(collection(db, "dropoutRequests"));
+    const querySnapshot = await getDocs(collection(db, "students"));
     const requests: any[] = [];
     querySnapshot.forEach((doc) => {
-      requests.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      if (data.isDroppedOut) {
+        requests.push({ id: doc.id, ...data });
+      }
     });
     setDropoutList(requests);
   };
 
-  const handleStudentSelection = (lrn: string) => {
-    const selectedStudent = enrolledStudents.find(student => student.lrn === lrn);
-    if (selectedStudent) {
-      setFormData({
-        name: `${selectedStudent.firstName} ${selectedStudent.lastName}`,
-        LRN: selectedStudent.lrn,
-        grade: selectedStudent.grade,
-        reason: '',
-        parentContact: '',
-      });
-    }
-    setSelectedStudentLRN(lrn);
-  };
+  useEffect(() => {
+    fetchDropoutRequests();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     try {
-      // Add the form data to Firestore
       await addDoc(collection(db, "dropoutRequests"), formData);
       console.log('Dropout request submitted', formData);
+      
+      const studentQuery = await getDocs(collection(db, "students"));
+      studentQuery.forEach(async (studentDoc) => {
+        const studentData = studentDoc.data();
+        if (studentData.LRN === formData.LRN) {
+          await updateDoc(doc(db, "students", studentDoc.id), { isDroppedOut: true });
+        }
+      });
 
-      // Fetch updated dropout list
       fetchDropoutRequests();
-
-      // Reset form data
       setFormData({
         name: '',
         LRN: '',
@@ -115,102 +53,96 @@ const DropoutForm = () => {
         reason: '',
         parentContact: '',
       });
-      setSelectedStudentLRN('');
     } catch (error) {
       console.error('Error adding dropout request:', error);
     }
   };
 
   return (
-    <div className="flex-1 p-5 bg-gradient-to-br from-blue-50 to-green-50 text-gray-700 min-h-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Form Section */}
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Dropout Form</h2>
-          <form onSubmit={handleSubmit}>
-            <label className="font-bold block mb-2 text-gray-600">Select Student (LRN)</label>
-            <select
-              value={selectedStudentLRN}
-              onChange={(e) => handleStudentSelection(e.target.value)}
-              className="w-full mb-4 p-2 border rounded"
-            >
-              <option value="">Select a student by LRN</option>
-              {enrolledStudents.map((student) => (
-                <option key={student.lrn} value={student.lrn}>
-                  {student.lrn} - {student.firstName} {student.lastName}
-                </option>
-              ))}
-            </select>
+    <div className="min-h-full bg-gray-100 p-8 mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Dropout Request</h2>
+        <form onSubmit={handleSubmit}>
+          <label className="font-semibold block mb-2 text-gray-700">Name</label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter full name"
+            required
+          />
+          
+          <label className="font-semibold block mb-2 text-gray-700">Learner Reference Number (LRN)</label>
+          <input
+            type="text"
+            value={formData.LRN}
+            onChange={(e) => setFormData({ ...formData, LRN: e.target.value })}
+            className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter LRN"
+            required
+          />
 
-            <label className="font-bold block mb-2 text-gray-600">Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full mb-4 p-2 border rounded"
-              placeholder="Enter student name"
-              required
-              readOnly
-            />
+          <label className="font-semibold block mb-2 text-gray-700">Grade/Year Level</label>
+          <select
+            value={formData.grade}
+            onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+            className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Select Grade Level</option>
+            <option value="Grade 7">Grade 7</option>
+            <option value="Grade 8">Grade 8</option>
+            <option value="Grade 9">Grade 9</option>
+            <option value="Grade 10">Grade 10</option>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
+          </select>
 
-            <label className="font-bold block mb-2 text-gray-600">LRN</label>
-            <input
-              type="text"
-              value={formData.LRN}
-              onChange={(e) => setFormData({ ...formData, LRN: e.target.value })}
-              className="w-full mb-4 p-2 border rounded"
-              required
-              readOnly
-            />
+          <label className="font-semibold block mb-2 text-gray-700">Reason for Dropping Out</label>
+          <textarea
+            value={formData.reason}
+            onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+            className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Provide your reason"
+            rows={4}
+            required
+          ></textarea>
 
-            <label className="font-bold block mb-2 text-gray-600">Grade</label>
-            <input
-              type="text"
-              value={formData.grade}
-              onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
-              className="w-full mb-4 p-2 border rounded"
-              required
-              readOnly
-            />
+          <label className="font-semibold block mb-2 text-gray-700">Parent/Guardian Contact Information</label>
+          <input
+            type="text"
+            value={formData.parentContact}
+            onChange={(e) => setFormData({ ...formData, parentContact: e.target.value })}
+            className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Contact number of parent/guardian"
+            required
+          />
 
-            <label className="font-bold block mb-2 text-gray-600">Reason for Dropout</label>
-            <textarea
-              value={formData.reason}
-              onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-              className="w-full mb-4 p-2 border rounded"
-              placeholder="Reason for dropout"
-              required
-            />
+          <button type="submit" className="w-full bg-blue-600 text-white font-semibold p-3 rounded-lg hover:bg-blue-500 transition duration-200">
+            Submit Dropout Request
+          </button>
+        </form>
+      </div>
 
-            <label className="font-bold block mb-2 text-gray-600">Parent Contact</label>
-            <input
-              type="text"
-              value={formData.parentContact}
-              onChange={(e) => setFormData({ ...formData, parentContact: e.target.value })}
-              className="w-full mb-4 p-2 border rounded"
-              placeholder="Parent's contact information"
-              required
-            />
-
-            <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-              Submit Dropout Request
-            </button>
-          </form>
-        </div>
-
-        {/* Dropout List */}
-        <div className="bg-white p-6 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Dropout Requests</h2>
-          <ul>
-            {dropoutList.map((request) => (
-              <li key={request.id} className="mb-4 p-4 border-b">
-                <strong>{request.name}</strong> - LRN: {request.LRN} - Grade: {request.grade}
-                <p>Reason: {request.reason}</p>
-                <p>Parent Contact: {request.parentContact}</p>
+      {/* Dropout List Section */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Dropout List</h2>
+        {dropoutList.length > 0 ? (
+          <ul className="space-y-4">
+            {dropoutList.map((dropout) => (
+              <li key={dropout.id} className="border-b pb-4 text-gray-700">
+                <p><strong>Name:</strong> {dropout.name}</p>
+                <p><strong>LRN:</strong> {dropout.LRN}</p>
+                <p><strong>Grade:</strong> {dropout.grade}</p>
+                <p><strong>Reason:</strong> {dropout.reason}</p>
+                <p><strong>Contact:</strong> {dropout.parentContact}</p>
               </li>
             ))}
           </ul>
-        </div>
+        ) : (
+          <p className="text-gray-500">No dropout requests submitted yet.</p>
+        )}
       </div>
     </div>
   );

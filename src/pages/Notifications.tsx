@@ -101,16 +101,15 @@ const Notifications: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-800 text-white">
+    <div className="flex items-center justify-center min-h-screen bg-white text-gray-700">
       <div className="w-full max-w-7xl px-4 py-4">
-        <div className="bg-gray-900 shadow-lg rounded-lg p-4">
-          <h2 className="text-2xl font-bold mb-4 text-center">Certificate Request List</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full bg-gray-800 border border-gray-700 rounded-md shadow-md">
+        <h2 className="text-2xl font-bold mb-4 text-center text-gray-700">Certificate Request List</h2>
+          <div className="overflow-x-auto rounded-2xl">
+            <table className="w-full mt-6 bg-white shadow-lg rounded-lg overflow-hidden">
               <thead>
-                <tr className="bg-gray-700">
+                <tr className="bg-gray-300">
                   {['Full Name', 'Form/Certificate', 'LRN', 'Contact', 'Email', 'Strand/Track', 'Year Graduated', 'Grade Level', 'Status', 'Timestamp', 'Action', 'Generate Data'].map((heading) => (
-                    <th key={heading} className="px-2 py-3 text-left text-gray-300 font-semibold text-sm">
+                    <th key={heading} className="px-2 py-3 text-left text-gray-900 font-semibold text-sm">
                       {heading}
                     </th>
                   ))}
@@ -123,7 +122,7 @@ const Notifications: React.FC = () => {
                   </tr>
                 ) : (
                   requests.map((request) => (
-                    <tr key={request.id} className="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+                    <tr key={request.id} className="border-t hover:bg-gray-100 transition-colors">
                       <td className="px-2 py-2 text-sm">{`${request.firstName} ${request.middleInitial} ${request.lastName} ${request.suffix}`}</td>
                       <td className="px-2 py-2 text-sm">{request.depedForm}</td>
                       <td className="px-2 py-2 text-sm">{request.lrn}</td>
@@ -174,7 +173,6 @@ const Notifications: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
       </div>
     </div>
   );

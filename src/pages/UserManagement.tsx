@@ -20,14 +20,14 @@ interface User {
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>(''); 
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeRoleFilter, setActiveRoleFilter] = useState<string | null>(null);
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [fullname, setFullname] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(''); 
+  const [password, setPassword] = useState('');
   const [role, setRole] = useState('Admin');
   const [status, setStatus] = useState('Active');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -79,7 +79,7 @@ const UserManagement: React.FC = () => {
     setFullname(user.fullname);
     setUsername(user.username);
     setEmail(user.email);
-    setPassword(''); 
+    setPassword('');
     setRole(user.role);
     setStatus(user.status);
     setImageFile(null);
@@ -96,14 +96,12 @@ const UserManagement: React.FC = () => {
     let newImageUrl = editingUser.imageUrl;
 
     try {
-      // Upload a new image if one is selected
       if (imageFile) {
         const storageRef = ref(storage, `userImages/${editingUser.id}`);
         await uploadBytes(storageRef, imageFile);
         newImageUrl = await getDownloadURL(storageRef);
       }
 
-      // Update user details in Firestore
       await updateDoc(userDocRef, {
         fullname,
         username,
@@ -113,7 +111,6 @@ const UserManagement: React.FC = () => {
         imageUrl: newImageUrl,
       });
 
-      // Reauthenticate if email has changed
       if (currentUser && email !== editingUser.email) {
         if (!reauthPassword) {
           alert("Please enter your password to confirm email change.");
@@ -125,12 +122,10 @@ const UserManagement: React.FC = () => {
         await updateEmail(currentUser, email);
       }
 
-      // Update password if a new password is provided
       if (password && currentUser) {
         await updatePassword(currentUser, password);
       }
 
-      // Reset the form state
       setEditingUser(null);
       setFullname('');
       setUsername('');
@@ -153,7 +148,7 @@ const UserManagement: React.FC = () => {
     setFullname('');
     setUsername('');
     setEmail('');
-    setPassword(''); 
+    setPassword('');
     setRole('Admin');
     setStatus('Active');
     setImageFile(null);
@@ -169,51 +164,49 @@ const UserManagement: React.FC = () => {
   });
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold text-center">User Management</h2>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">User Management</h2>
 
-      {/* Responsive Dashboard */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-        <button 
-          onClick={() => setActiveRoleFilter(activeRoleFilter === 'Admin' ? null : 'Admin')} 
-          className="p-4 border rounded shadow bg-white flex items-center focus:outline-none transform hover:scale-105 transition-transform"
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <button
+          onClick={() => setActiveRoleFilter(activeRoleFilter === 'Admin' ? null : 'Admin')}
+          className="p-4 border rounded-2xl shadow-lg bg-gradient-to-r from-blue-500 to-indigo-600 transform hover:scale-105 flex items-center transition-transform"
         >
-          <FaUserShield className="text-4xl text-blue-500 mr-4" />
+          <FaUserShield className="text-4xl text-white mr-4" />
           <div>
-            <h3 className="font-bold text-lg">Admin(s)</h3>
-            <p className="text-gray-600">{userCounts.Admin}</p>
+            <h3 className="font-bold text-2xl text-white">Admin(s)</h3>
+            <p className="text-white">{userCounts.Admin}</p>
           </div>
         </button>
-        <button 
-          onClick={() => setActiveRoleFilter(activeRoleFilter === 'Adviser' ? null : 'Adviser')} 
-          className="p-4 border rounded shadow bg-white flex items-center focus:outline-none transform hover:scale-105 transition-transform"
+        <button
+          onClick={() => setActiveRoleFilter(activeRoleFilter === 'Adviser' ? null : 'Adviser')}
+          className="p-4 border rounded-2xl shadow-lg bg-gradient-to-r from-green-400 to-teal-500 transform hover:bg-green-100 hover:scale-105 flex items-center transition-transform"
         >
-          <FaUserGraduate className="text-4xl text-green-500 mr-4" />
+          <FaUserGraduate className="text-4xl text-white mr-4" />
           <div>
-            <h3 className="font-bold text-lg">Adviser(s)</h3>
-            <p className="text-gray-600">{userCounts.Adviser}</p>
+            <h3 className="font-bold text-2xl text-white">Adviser(s)</h3>
+            <p className="text-white">{userCounts.Adviser}</p>
           </div>
         </button>
-        <button 
-          onClick={() => setActiveRoleFilter(activeRoleFilter === 'Faculty' ? null : 'Faculty')} 
-          className="p-4 border rounded shadow bg-white flex items-center focus:outline-none transform hover:scale-105 transition-transform"
+        <button
+          onClick={() => setActiveRoleFilter(activeRoleFilter === 'Faculty' ? null : 'Faculty')}
+          className="p-4 border rounded-2xl shadow-lg bg-gradient-to-r from-yellow-400 to-orange-500 transform hover:bg-yellow-100 hover:scale-105 flex items-center transition-transform"
         >
-          <FaUserTie className="text-4xl text-yellow-500 mr-4" />
+          <FaUserTie className="text-4xl text-white mr-4" />
           <div>
-            <h3 className="font-bold text-lg">Faculty(ies)</h3>
-            <p className="text-gray-600">{userCounts.Faculty}</p>
+            <h3 className="font-bold text-2xl text-white">Faculty(ies)</h3>
+            <p className="text-white">{userCounts.Faculty}</p>
           </div>
         </button>
       </div>
 
-      {/* Flex container for Add User button and Search Bar */}
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-8">
         {currentUserRole === 'Admin' ? (
-          <Link to="/add-user" className="bg-green-500 text-white p-2 rounded">
+          <Link to="/add-user" className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
             Add User
           </Link>
         ) : (
-          <p className="text-red-600">You do not have permission to add users.</p>
+          <p className="text-red-600 font-medium">You do not have permission to add users.</p>
         )}
 
         <input
@@ -221,76 +214,74 @@ const UserManagement: React.FC = () => {
           placeholder="Search by name, username, or email"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 border border-gray-300 rounded w-3/4 ml-4"
+          className="py-2 px-4 border border-gray-300 rounded-lg w-3/4 sm:w-1/2"
         />
       </div>
 
-      {/* Users Table */}
-      <table className="min-w-full border border-gray-300 mt-4">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-gray-300 p-2">Fullname</th>
-            <th className="border border-gray-300 p-2">Username</th>
-            <th className="border border-gray-300 p-2">Email</th>
-            <th className="border border-gray-300 p-2">Role</th>
-            <th className="border border-gray-300 p-2">Status</th>
+      <table className="w-full mt-6 bg-white shadow-lg rounded-lg overflow-hidden">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="p-4 text-left text-gray-600">Fullname</th>
+            <th className="p-4 text-left text-gray-600">Username</th>
+            <th className="p-4 text-left text-gray-600">Email</th>
+            <th className="p-4 text-left text-gray-600">Role</th>
+            <th className="p-4 text-left text-gray-600">Status</th>
             <th className="border border-gray-300 p-2">Image</th>
-            {currentUserRole === 'Admin' && <th className="border border-gray-300 p-2">Actions</th>}
+            <th className="p-4 text-left text-gray-600">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredUsers.map((user) => (
-            <tr key={user.id}>
-              <td className="border border-gray-300 p-2">{user.fullname}</td>
-              <td className="border border-gray-300 p-2">{user.username}</td>
-              <td className="border border-gray-300 p-2">{user.email}</td>
-              <td className="border border-gray-300 p-2">{user.role}</td>
-              <td className="border border-gray-300 p-2">{user.status}</td>
+            <tr key={user.id} className="border-t hover:bg-gray-100 transition-colors">
+              <td className="p-4">{user.fullname}</td>
+              <td className="p-4">{user.username}</td>
+              <td className="p-4">{user.email}</td>
+              <td className="p-4">{user.role}</td>
+              <td className="p-4">{user.status}</td>
               <td className="border border-gray-300 p-2">
                 <img src={user.imageUrl} alt="Profile" className="h-10 w-10 rounded-full" />
               </td>
               {currentUserRole === 'Admin' && (
                 <td className="border border-gray-300 p-2">
-                  <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => handleEditUser(user)}
-                  >
-                    Edit
-                  </button>
-                </td>
+                <button
+                  onClick={() => handleEditUser(user)}
+                  className="bg-blue-500 text-white py-1 px-3 rounded-lg hover:bg-blue-600 mr-2"
+                >
+                  Edit
+                </button>
+              </td>
               )}
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Edit User Form */}
       {editingUser && (
-        <form onSubmit={handleSaveEdit} className="mt-4 p-4 border border-gray-300">
-          <h3 className="text-xl font-bold">Edit User</h3>
+        <form onSubmit={handleSaveEdit} className="mt-8 bg-white p-6 rounded-lg shadow-md">
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">Edit User</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input
               type="text"
-              placeholder="Fullname"
               value={fullname}
               onChange={(e) => setFullname(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="py-2 px-4 border border-gray-300 rounded-lg"
+              placeholder="Fullname"
               required
             />
             <input
               type="text"
-              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="py-2 px-4 border border-gray-300 rounded-lg"
+              placeholder="Username"
               required
             />
             <input
               type="email"
-              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="py-2 px-4 border border-gray-300 rounded-lg"
+              placeholder="Email"
               required
             />
             <input
@@ -298,13 +289,12 @@ const UserManagement: React.FC = () => {
               placeholder="Password (leave blank to keep current)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="p-2 border border-gray-300 rounded-lg"
             />
-            
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="py-2 px-4 border border-gray-300 rounded-lg"
               required
             >
               <option value="Admin">Admin</option>
@@ -316,12 +306,12 @@ const UserManagement: React.FC = () => {
               placeholder="old password"
               value={reauthPassword}
               onChange={(e) => setReauthPassword(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="p-2 border border-gray-300 rounded-lg"
             />
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="p-2 border border-gray-300"
+              className="py-2 px-4 border border-gray-300 rounded-lg"
               required
             >
               <option value="Active">Active</option>
@@ -329,17 +319,24 @@ const UserManagement: React.FC = () => {
             </select>
             <input
               type="file"
+              onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
+              className="py-2 px-4 border border-gray-300 rounded-lg"
               accept="image/*"
-              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-              className="p-2 border border-gray-300"
             />
           </div>
-          <div className="mt-4 flex justify-between">
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-              Save
-            </button>
-            <button type="button" onClick={handleCancelEdit} className="bg-gray-500 text-white p-2 rounded">
+          <div className="mt-4 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="py-2 px-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+            >
               Cancel
+            </button>
+            <button
+              type="submit"
+              className="py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              Save
             </button>
           </div>
         </form>

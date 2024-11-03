@@ -11,9 +11,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 
     const menuItems = [
         { path: '/', label: 'Home', icon: <FaHome className="text-blue-400" /> },
-        { path: '/user-management', label: 'User Management', icon: <FaUserCog className="text-red-400" /> },
-        { path: '/form-templates', label: 'Form Templates', icon: <FaClipboardList className="text-purple-400" /> },
-        { path: '/data-management', label: 'Data Management', icon: <FaDatabase className="text-green-400" /> },
+        { path: '/user-management', label: 'User Management', icon: <FaUserCog className="text-green-400" /> },
+        { path: '/form-templates', label: 'Form Templates', icon: <FaClipboardList className="text-yellow-400" /> },
+        { path: '/data-management', label: 'Data Management', icon: <FaDatabase className="text-red-400" /> },
     ];
 
     return (
