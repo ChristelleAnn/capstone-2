@@ -32,7 +32,7 @@ const AdminGrades = () => {
   const handleEdit = (student: Student) => {
     setEditingStudent(student);
   };
-
+  
   const handleSave = async () => {
     if (editingStudent) {
       const studentDoc = doc(db, "students", editingStudent.id);
